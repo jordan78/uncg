@@ -1,0 +1,11 @@
+expanding LVM volume online 
+
+add new disk much larger in size to accomodate future growth 
+pvcreate /dev/sdc
+vgextend vgu02 /dev/sdc
+vgdipslay vgu02 -v
+pvmove /dev/sdb /dev/sdc 
+after it moves
+vgreduce vgu02 /dev/sdb
+lvextend -L +10G /dev/vgu02/u02
+resize2fs /dev/vgu02/u02  or xfs_growfs /dev/vgu02/u02 
