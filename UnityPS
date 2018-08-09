@@ -1,0 +1,33 @@
+## save the password in an encrypted file one time use to create the encrypted file
+#$credential = Get-Credential
+#$credential.Password | ConvertFrom-SecureString | Out-File C:\myaccount.txt
+####################################################################################
+
+## Connect to Unity 
+
+$unity300 = '192.168.1.1'
+$username = 'admin'
+$password = Get-Content C:\myaccount.txt | ConvertTo-SecureString
+
+Connect-Unity -Server $unity300 -Username $username -Password $password
+
+$dnsservers = Get-Unityitem -URI '/api/types/dnsServer/instances?fields=id,addresses' -JSON
+$metrics = Get-UnityMetric -Name 'Read IO time'
+$listofdisks = Get-UnityDisk
+$metricsvalue = Get-UnityMetricValue -Path 'sp.*.cpu.summary.utilization'
+$vmwareluns = Get-UnityVMwareLUN
+
+
+#GET-Unityitem -URI '/api/types/disk/instances?per_page=3&page=2&fields=name,pool,tierType&compact=true' -JSON
+#GET-UnityItem -URI '/api/types/user/instances' -JSON
+#GET-Unityitem -URI '/api/types/alert/instances?fields=severity,description?per_page=10' -JSON
+#GET https://10.30.128.185/api/types/disk/instances?fields=name,size &orderby=name&compact=true
+
+$json  = '{"VMWare LUNs:"' + $vmwareluns + '",'
+$json += '"List of Disks:"' + $listofdisks + '",'
+$json += '"Metrics:"' + $metrics + '",'
+$json += '"Metrics Value:"' + $metricsvalue + '",'
+$json += '"DNS Servers:"' + $dnsservers + '",'
+$json += '}'
+
+Write-Host $json
