@@ -1,10 +1,10 @@
-file { '/bannerstage': 
+file { '/mountpointdir': 
       ensure => directory,
       owner => 'oracle',
       group => 'dba', 
 }
 exec { "replace_share": 
-      command => "/bin/sed -i 's/spartandrive/bannernfs/g' /etc/fstab",
-      onlyif => "/bin/cat /etc/fstab | grep -i BannerStage",
-      require => File["/bannerstage"],
+      command => "/bin/sed -i 's/oldnfsserver/newnfsserver/g' /etc/fstab",
+      onlyif => "/bin/cat /etc/fstab | grep -i mountpointdir",
+      require => File["/mountpointdir"],
 }
