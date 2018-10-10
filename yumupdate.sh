@@ -7,4 +7,4 @@ echo "----------------------------------"
 yum update -y
 
 needs-restarting -r; echo $?
-needs-restarting -r || shutdown -r
+#needs-restarting -r || shutdown -r
