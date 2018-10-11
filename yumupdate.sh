@@ -4,7 +4,7 @@ echo "---> $(date)"
 echo "---> Yum updating: $(hostname -f)"
 echo "----------------------------------"
 
-timeout 1500 yum update -y
+timeout 600 yum update -y
 
 #needs-restarting -r; echo $?
 
