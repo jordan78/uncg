@@ -1,7 +1,7 @@
 $src = "\\sourcefileserver\homedir"
 $dest = "\\destfileserver\homedir"
 
-$option = "/E /COPYALL /DCOPY:DAT /MIR /MT:96"
+$option = "/E /COPYALL /DCOPY:DAT /MIR /MT:96 /r:5 /w:10"
 
 ## loop through some list of user names 
 
