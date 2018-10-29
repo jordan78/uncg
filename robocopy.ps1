@@ -12,5 +12,5 @@ foreach($user in get-content c:\listofusers.txt) {
     # sleep to make sure directroy is created first
     Start-Sleep -Seconds 3
     # start copying
-    Powershell -Command "Robocopy $src\$user  $dest\$user $option /Log:c:\log_$user.txt"
+    Powershell -Command "Robocopy $src\$user  $dest\$user /XF '$src\$user\desktop.ini' $option /Log:c:\log_$user.txt"
 }
