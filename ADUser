@@ -4,9 +4,20 @@ Import-Module ServerManager
 Add-WindowsFeature RSAT-AD-Powershell
 
 $acct = "someuser"
-
 $user = $Null
-
 $user = Get-ADUser -filter {sAMAccountName -eq $acct} 
-
 write-host "$user exists in AD"
+
+## read all subfolders homedir
+$acct = $folder.pschildname
+$User = $null
+$User = Get-ADUser -filter {sAMAccountName -eq $acct}
+
+If ($User -eq $Null)
+  {
+   "user does not exist in AD do nothing"
+  }
+ else
+     {
+      "user found in AD do something"
+     }
