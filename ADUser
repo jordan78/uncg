@@ -1,0 +1,12 @@
+## Check if user exists in AD 
+
+Import-Module ServerManager
+Add-WindowsFeature RSAT-AD-Powershell
+
+$acct = "someuser"
+
+$user = $Null
+
+$user = Get-ADUser -filter {sAMAccountName -eq $acct} 
+
+write-host "$user exists in AD"
