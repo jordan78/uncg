@@ -1,0 +1,34 @@
+
+$src = "\\sourcesmbserver\Homedirectories"
+$dest = "\\destsmbserver\Homedirectories" 
+$option = "/E /COPYALL /DCOPY:DAT /MIR /MT:96 /R:5 /W:10"
+
+Import-Module ServerManager
+Add-WindowsFeature RSAT-AD-Powershell
+
+## loop through some list of users
+
+## home folder has to exists first. 
+
+
+foreach($user in get-content c:\testaccountsaka.txt) { 
+
+    # if statement to check if the user is in AD. 
+
+    $exists = Get-ADUser -filter {sAMAccountName -eq $user} 
+
+    if ($exists -eq $Null) { 
+
+        write-host "$user does not exists in AD"
+
+    } else { 
+
+        New-Item -ItemType directory -Path $dest\$user
+
+        Start-Sleep -Seconds 3
+
+        write-host "$user found in AD"
+   
+        Powershell -Command "Robocopy $src\$user  $dest\$user /XF '$src\$user\desktop.ini' $option /Log:c:\log_$user.txt"
+    }
+}
