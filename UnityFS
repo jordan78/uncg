@@ -1,0 +1,34 @@
+$unity450 = '$10.1.1.1'
+$username = 'mmyasin'
+$password = Get-Content C:\myaccount.txt | ConvertTo-SecureString
+
+Connect-Unity $unity450 -Username $username -Password $password
+
+#region splunk API access 
+
+ $token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
+ $headers = @{Authorization = "Splunk $token"}
+ $splunkserver = "http://192.168.1.1:8088/services/collector/event"
+
+#endregion splunk API Access
+
+Get-UnityFilesystem | ForEach-Object {
+
+$fsbody  = '{'
+$fsbody  +=  '"index":"main",'
+$fsbody  += '"event":"metric",'
+$fsbody  += '"host": "PLM-Unity650F",'
+$fsbody  += '"sourcetype":"unitystg",'
+$fsbody  += '"fields":{'
+$fsbody  += '"filesystem":"'+$_.Name+'",'
+$fsbody  += '"SizeUsed":"'+$_.sizeUsed+'",'
+$fsbody  += '"sizeTotal":"'+$_.sizeTotal+'"'
+$fsbody  += '}'
+$fsbody  += '}'
+
+Invoke-RestMethod -Uri $splunkserver -Method Post -ContentType "application/json" -Headers $headers -Body $fsbody
+
+$fsbody = ""
+
+}
+Disconnect-Unity -Confirm:$false
