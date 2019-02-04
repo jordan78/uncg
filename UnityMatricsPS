@@ -1,0 +1,92 @@
+
+#region Credential Settings
+  #$credential = Get-Credential
+  #$credential.Password | ConvertFrom-SecureString | Out-File C:\myaccount.txt
+#endregion
+
+#region clear all variables
+
+$unity450 =""
+$username = ""
+$password = ""
+$unitypool = ""
+$unityfree = ""
+$unityused = ""
+$uniyinfo = ""
+
+#endregion clear all variables
+#region authenticate to Unity 
+
+
+$unity450 = '10.1.1.1'
+$username = 'myusername'
+$password = Get-Content C:\myaccount.txt | ConvertTo-SecureString
+
+Connect-Unity $unity450 -Username $username -Password $password
+
+#endregion 
+
+#region Get Unity Pool Info
+
+$unitypool       = Get-UnityPool | Select-Object -Unique
+$stgfree         = $unitypool.sizeFree/1024/1024/1024
+$stgused         = $unitypool.sizeUsed/1024/1024/1024
+$stgsubscribed   = $unitypool.sizeSubscribed/1024/1024/1024
+$compressionRate = $unitypool.compressionRatio
+
+#endregion 
+
+#region Get Unity CPU Utilization 
+
+ #$spa_util = Get-UnityMetricValue -Path 'sp.spa.cpu.summary.utilization' -Count 1 | Select-Object -Unique
+ #$spb_util = Get-UnityMetricValue -Path 'sp.spb.cpu.summary.utilization' -Count 1 | Select-Object -Unique
+
+$spa = Get-UnityMetricValue -Path 'sp.spa.cpu.summary.utilization'
+$spb = Get-UnityMetricValue -Path 'sp.spb.cpu.summary.utilization'
+
+$spaAvg = 0
+$spbAvg = 0 
+
+$spa1.values.spa | ForEach-Object { $spaAvg += $_   } 
+$spb1.values.spb | ForEach-Object { $spbAvg += $_   } 
+ 
+#endregion 
+
+#region Get Unity Read IO Time
+
+$unityinfo = Get-UnityBasicSystemInfo | Select-Object -Unique
+
+#endregion 
+
+#region build Json File 
+
+$body  = '{'
+$body  +=  '"index":"main",'
+$body  += '"event":"metric",'
+$body  += '"host":"'+$unityinfo.name+'",'
+$body  += '"sourcetype":"unitylogs",'
+$body  += '"fields":{'
+$body  += '"storagefree":"'+$stgfree+'",'
+$body  += '"storageused":"'+$stgused+'",'
+$body  += '"storagesubscribed":"'+$stgsubscribed+'",'
+$body  += '"compressionRate":"'+$compressionRate+'",'
+#$body  += '"spa_utilization":"'+$spa_util.values.spa+'",'
+#$body  += '"spb_utilization":"'+$spb_util.values.spb+'"'
+$body  += '"spa_utilization":"'+$spaAvg/20+'",'
+$body  += '"spb_utilization":"'+$spbAvg/20+'"'
+$body  += '}'
+$body  += '}'
+
+#endregion end building json 
+
+#region to setup splunk API 
+
+    $token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
+    $headers = @{Authorization = "Splunk $token"}
+    $splunkserver = "http://192.168.1.1:8088/services/collector/event"
+
+#endregion 
+
+Invoke-RestMethod -Uri $splunkserver -Method Post -ContentType "application/json" -Headers $headers -Body $body
+
+Disconnect-Unity -Confirm:$false
