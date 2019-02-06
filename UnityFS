@@ -16,10 +16,9 @@ Get-UnityFilesystem | ForEach-Object {
 
 $fsbody  = '{'
 $fsbody  +=  '"index":"main",'
-$fsbody  += '"event":"metric",'
 $fsbody  += '"host": "PLM-Unity650F",'
 $fsbody  += '"sourcetype":"unitystg",'
-$fsbody  += '"fields":{'
+$fsbody  += '"event":{'
 $fsbody  += '"filesystem":"'+$_.Name+'",'
 $fsbody  += '"SizeUsed":"'+$_.sizeUsed+'",'
 $fsbody  += '"sizeTotal":"'+$_.sizeTotal+'"'
