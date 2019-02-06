@@ -25,6 +25,8 @@ $fsbody  += '"sizeTotal":"'+$_.sizeTotal+'"'
 $fsbody  += '}'
 $fsbody  += '}'
 
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 Invoke-RestMethod -Uri $splunkserver -Method Post -ContentType "application/json" -Headers $headers -Body $fsbody
 
 $fsbody = ""
