@@ -62,10 +62,9 @@ $unityinfo = Get-UnityBasicSystemInfo | Select-Object -Unique
 
 $body  = '{'
 $body  +=  '"index":"main",'
-$body  += '"event":"metric",'
 $body  += '"host":"'+$unityinfo.name+'",'
 $body  += '"sourcetype":"unitylogs",'
-$body  += '"fields":{'
+$body  += '"event":{'
 $body  += '"storagefree":"'+$stgfree+'",'
 $body  += '"storageused":"'+$stgused+'",'
 $body  += '"storagesubscribed":"'+$stgsubscribed+'",'
