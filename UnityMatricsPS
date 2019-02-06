@@ -87,6 +87,8 @@ $body  += '}'
 
 #endregion 
 
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 Invoke-RestMethod -Uri $splunkserver -Method Post -ContentType "application/json" -Headers $headers -Body $body
 
 Disconnect-Unity -Confirm:$false
